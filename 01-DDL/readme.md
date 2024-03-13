@@ -44,3 +44,30 @@ show tables;
 ```
 describe parents;
 ```
+
+## Create the locations table
+```
+create table locations (
+  location_id int unsigned auto_increment primary key,
+  name varchar(255),
+  address varchar(255)
+) engine = innodb;
+```
+
+## Insert one parent
+```
+insert into parents (first_name, last_name) VALUES ("John", "Snow");
+```
+
+## Show all rows from a table
+```
+select * from parents;
+```
+
+## Insert many rows at one go
+```
+insert into parents (first_name, last_name) VALUES
+ ("Mary", "Su"),  
+ ("Alice", "White"),
+ ("Jon", "Wick");
+ ```
