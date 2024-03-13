@@ -54,20 +54,77 @@ create table locations (
 ) engine = innodb;
 ```
 
-## Insert one parent
+## Insert one parent (Data Manipulation Language)
 ```
 insert into parents (first_name, last_name) VALUES ("John", "Snow");
 ```
 
-## Show all rows from a table
+## Show all rows from a table (Data Query Language)
 ```
 select * from parents;
 ```
 
-## Insert many rows at one go
+## Insert many rows at one go (Data Manipulation Language)
 ```
-insert into parents (first_name, last_name) VALUES
+insert into parents (first_name, last_name) values
  ("Mary", "Su"),  
  ("Alice", "White"),
  ("Jon", "Wick");
  ```
+
+ ## Insert many locations at one go (Data Manipulation Language)
+ ```
+INSERT INTO locations (name, address) VALUES 
+    ("Yishun Swimming Complex", "Yishun Ave 4"),
+    ("Commonwealth Swimming Complex", "Commonwealth Drive"),
+    ("Pioneer Swimming Complex", "Pioneer Way");
+ ```
+
+ # Foreign Keys
+
+ ## 1. Create the `students` table without the foreign key
+ ```
+ CREATE TABLE students (
+    student_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(45) NOT NULL,
+    swimming_level VARCHAR(45),
+    dob DATE NOT NULL
+ ) ENGINE = innodb;
+```
+
+## 2. Add in the column for the foreign key
+
+We will use the `ALTER TABLE` command which allows us to make
+changes to a table.
+
+```
+ALTER TABLE students ADD COLUMN parent_id INT UNSIGNED;
+```
+
+## 3. Define the foreign key
+```
+ALTER TABLE students ADD CONSTRAINT fk_students_parents
+    FOREIGN KEY (parent_id) REFERENCES parents(parent_id);
+```
+
+## 4. Add in some students
+```
+INSERT INTO students (name, swimming_level, dob, parent_id) 
+ VALUES ("Mary Snow", "Beginnner", "2019-01-01", 1);
+```
+
+# How to add a new column to a table?
+Add email address to parent:
+```
+ALTER TABLE parents ADD COLUMN email VARCHAR(100);
+```
+
+# How to remove a column from a table
+```
+ALTER TABLE parents DROP COLUMN email;
+```
+
+# How to delete an entire table
+```
+DROP TABLE parents
+```
