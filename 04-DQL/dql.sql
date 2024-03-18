@@ -93,3 +93,84 @@ ON customers.salesRepEmployeeNumber = employees.employeeNumber
 WHERE country="USA"
 ORDER BY creditLimit DESC
 LIMIT 10;
+
+-- AGGREGATE FUNCTIONS
+
+-- Count how many employees there are
+SELECT COUNT(*) FROM employees;
+
+-- Count how many employees there are in office code 1
+SELECT COUNT(*) FROM employees WHERE officeCode = 1;
+
+-- Find the average credit limit among all the customers
+SELECT AVG(creditLimit) FROM customers;
+
+-- Find the maximum credit limit
+SELECT MAX(creditLimit) FROM customers;
+
+-- find the minimum credit limit
+SELECT MIN(creditLimit) FROM customers;
+
+-- Find the total credit limit of all the customers
+SELECT SUM(creditLimit) FROM customers;
+
+-- GROUPING
+
+-- show how many employees are there in each office code
+SELECT officeCode, COUNT(*) FROM employees 
+GROUP BY officeCode
+
+-- For each country, show how many customers there are
+SELECT country, COUNT(*) FROM customers
+GROUP BY country  -- Whatever you group by you must select
+
+-- for each product, how many times they have been ordered
+SELECT productCode, COUNT(*) FROM orderdetails
+GROUP BY productCode
+
+-- Filtering before searching
+SELECT country, AVG(creditLimit) FROM customers
+WHERE creditLimit > 0
+GROUP BY country
+
+-- Show the number of employees for office
+-- and only show those with at least 3 employees
+SELECT officeCode, COUNT(*) FROM employees
+GROUP BY officeCode
+HAVING COUNT(*) >= 3
+
+-- for each sales rep whose office is in the USA, show all the sales rep who have at least five customers
+-- showing them in descending order and only the top 5
+SELECT employeeNumber, COUNT(*) AS 'Customer Count' FROM employees JOIN customers
+   	ON employees.employeeNumber = customers.salesRepEmployeeNumber
+   JOIN offices
+    ON employees.officeCode = offices.officeCode
+WHERE offices.country = "USA"
+GROUP BY employeeNumber
+HAVING `Customer Count` >= 5
+ORDER BY `Customer Count` DESC
+LIMIT 10;
+   
+-- DATES
+-- find all the orders placed before the year 2004 (this will only work if the orderDate column is 
+-- using the date data type)
+SELECT * FROM orders WHERE orderDate <= "2004-01-01"
+
+-- find all the orders between June 2004 to Aug 2004
+SELECT * FROM orders WHERE orderDate >= "2004-06-01" AND orderDate <= "2004-08-31";
+
+-- find all the orders that have shipped more than 1 day late
+SELECT * FROM orders WHERE shippedDate - requiredDate > 1
+
+-- MONTH, DAY and YEAR
+-- find all the orders that are placed in the year 2004
+SELECT * FROM orders WHERE YEAR(orderDate) = 2004;
+
+-- show the number of orders placed each year
+SELECT YEAR(orderDate), COUNT(*) FROM orders
+GROUP BY YEAR(orderDate)
+
+-- For the year 2003, show how many orders are placed per month
+SELECT MONTH(orderDate), COUNT(*) FROM orders
+WHERE YEAR(orderDate) = 2003
+GROUP BY MONTH(orderDate);
