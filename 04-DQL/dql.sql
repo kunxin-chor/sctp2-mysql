@@ -57,4 +57,39 @@ SELECT firstName, lastName, email, city,  addressLine1, addressLine2 FROM employ
 	  ON employees.officeCode = offices.officeCode
 	WHERE employees.officeCode = 1
  
- 
+ -- For each customer, display the customer name, and the name and email of the sales rep
+SELECT customerName, firstName, lastName, email FROM customers JOIN employees
+ ON customers.salesRepEmployeeNumber = employees.employeeNumber
+
+--  only limit to customers where credit limit is more than 100000
+ SELECT customerName, firstName, lastName, email FROM customers JOIN employees
+ ON customers.salesRepEmployeeNumber = employees.employeeNumber
+ WHERE creditLimit > 100000;
+
+ -- SORT BY ASCENDING ORDER
+
+ -- Display customers and sort them from lowest credit limit to highest
+ SELECT * FROM customers ORDER BY creditLimit;
+
+ SELECT * FROM customers ORDER BY creditLimit ASC;
+
+ -- DESCENDING ORDER: use `DESC`
+ SELECT * FROM customers ORDER BY creditLimit DESC;
+
+-- Filter before sorting
+ SELECT customerName, creditLimit FROM customers 
+WHERE country="USA"
+ORDER BY creditLimit DESC;
+
+-- LIMIT allows us to only get a few results
+SELECT customerName, creditLimit FROM customers 
+WHERE country="USA"
+ORDER BY creditLimit DESC
+LIMIT 10;  -- LIMIT 10 means the first ten results
+
+-- We can sort and limit a joined table (before joins happen first)
+SELECT customerName, creditLimit, firstName, lastName FROM customers JOIN employees
+ON customers.salesRepEmployeeNumber = employees.employeeNumber
+WHERE country="USA"
+ORDER BY creditLimit DESC
+LIMIT 10;
