@@ -9,6 +9,10 @@ const app = express();
 // set up the view engine
 app.set('view engine', 'hbs');
 
+require('handlebars-helpers')({
+    handlebars: hbs.handlebars
+})
+
 // enable static files
 app.use(express.static('public'));
 
@@ -76,6 +80,62 @@ async function main() {
 
         res.redirect('/customers');
    
+    })
+
+    app.get("/delete-customers/:customerId", async function(req,res){
+        const { customerId} = req.params; // same as `const customerId = req.params.customerId`
+        const query = `SELECT * FROM Customers WHERE customer_id = ${customerId}`;
+        
+        // connection.execute with a SELECT statement 
+        // you always get an array as a result even if there ONLY one possible result
+        const [customers] = await connection.execute(query);
+        const customerToDelete = customers[0];
+
+        res.render('delete-customer', {
+            'customer': customerToDelete
+        })
+
+    })
+
+    app.post('/delete-customers/:customerId', async function(req,res){
+        const {customerId} = req.params;
+
+        // check if the customerId in a relationship with an employee
+        const checkCustomerQuery = `SELECT * FROM EmployeeCustomer WHERE customer_id = ${customerId}`;
+        const [involved] = await connection.execute(checkCustomerQuery);
+        if (involved.length > 0) {
+            res.send("Unable to delete because the customer is in a sales relationship of an employee");
+            return;
+        }
+
+        const query = `DELETE FROM Customers WHERE customer_id = ${customerId}`;
+        await connection.execute(query);
+        res.redirect('/customers');
+    })
+
+    app.get('/update-customers/:customerId', async function(req,res){
+        const { customerId} = req.params;
+        const query = `SELECT * FROM Customers WHERE customer_id = ${customerId};`
+        const [customers] = await connection.execute(query);
+        const wantedCustomer = customers[0];
+        const [companies] = await connection.execute("SELECT * FROM Companies");
+        res.render('update-customer',{
+            'customer': wantedCustomer,
+            'companies': companies
+        })
+    })
+
+    app.post('/update-customers/:customerId', async function(req,res){
+        const {customerId} = req.params;
+        const {first_name, last_name, rating, company_id} = req.body;
+        const query = `UPDATE Customers SET first_name="${first_name}",
+                        last_name="${last_name}", 
+                        rating=${rating},
+                        company_id=${company_id}
+                       WHERE customer_id = ${customerId};`
+    
+        await connection.execute(query);
+        res.redirect('/customers');
     })
 
 }
