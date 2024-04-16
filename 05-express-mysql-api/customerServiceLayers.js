@@ -6,7 +6,7 @@ async function getAllCustomers() {
     return customers;
 }
 
-async function addNewCustomer(first_name, last_name, rating, employees) {
+async function addNewCustomer(first_name, last_name, rating, company_id, employees) {
 
     // make sure each of the employee is not serving 10 customers already because 10 is the max
     for (let employeeId of employees) {

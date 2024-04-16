@@ -42,7 +42,7 @@ async function addCustomer(firstName, lastName, rating, company_id, employees) {
     for (let employee_id of employeeArray) {
         await connection.execute(`INSERT INTO EmployeeCustomer (employee_id, customer_id) 
         VALUES (?, ?)
-            `, [employee_id, insertId])
+            `, [parseInt(employee_id), insertId])
     }
 
     return insertId;
